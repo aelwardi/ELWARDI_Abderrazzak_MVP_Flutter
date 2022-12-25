@@ -44,55 +44,53 @@ class _CheckOutState extends State<CheckOut> {
 
   Widget _buildButton() {
     return Column(
-        children: productProvider.userModelList.map((e) {
-          return Container(
-            height: 50,
-            child: ElevatedButton(
-              child: Text(
-                "Confirme panier",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xff746bc9)),
-              ),
-              onPressed: () {
-                if (productProvider.getCheckOutModelList.isNotEmpty) {
-                  FirebaseFirestore.instance.collection("Order").add({
-                    "Product": productProvider.getCheckOutModelList
-                        .map((c) => {
-                      "ProductName": c.name,
-                      "ProductPrice": c.price,
-                      "ProductQuetity": c.quentity,
-                      "ProductImage": c.image,
-                      "Product Color": c.color,
-                      "Product Size": c.size,
-                    })
-                        .toList(),
-                    "TotalPrice": total.toStringAsFixed(2),
-                    "UserName": e.userName,
-                    "UserEmail": e.userEmail,
-                    "UserNumber": e.userPhoneNumber,
-                    "UserAddress": e.userAddress,
-                    "UserId": user.uid,
-                  });
-                  setState(() {
-                    myList.clear();
-                  });
-
-                  productProvider.addNotification("Notification");
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Panier vide"),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        duration: Duration(milliseconds: 800),
-                      )
-                  );
-                }
-              },
-            ),
-          );
-        }).toList());
+      children: productProvider.userModelList.map((e)
+    {
+      return Container(
+        height: 50,
+        child: MyButton(
+          name: "Confirme panier",
+          onPressed: () {
+            if (productProvider.getCheckOutModelList.isNotEmpty) {
+              FirebaseFirestore.instance.collection("Order").add({
+                "Product": productProvider.getCheckOutModelList
+                    .map((c) =>
+                {
+                  "ProductName": c.name,
+                  "ProductPrice": c.price,
+                  "ProductQuetity": c.quentity,
+                  "ProductImage": c.image,
+                  "Product Color": c.color,
+                  "Product Size": c.size,
+                })
+                    .toList(),
+                "TotalPrice": total.toStringAsFixed(2),
+                "UserName": e.userName,
+                "UserEmail": e.userEmail,
+                "UserNumber": e.userPhoneNumber,
+                "UserAddress": e.userAddress,
+                "UserId": user.uid,
+              });
+              setState(() {
+                myList.clear();
+              });
+              productProvider.addNotification("Notification");
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Panier vide"),
+                    backgroundColor: Theme
+                        .of(context)
+                        .primaryColor,
+                    duration: Duration(milliseconds: 800),
+                  )
+              );
+            }
+          },
+        ),
+      );
+  }).toList(),
+    );
   }
 
   @override

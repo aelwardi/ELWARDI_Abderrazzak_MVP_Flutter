@@ -8,7 +8,6 @@ import 'package:myapplication/model/usermodel.dart';
 import 'package:myapplication/screens/homepage.dart';
 import 'package:myapplication/widgets/mybutton.dart';
 import 'package:myapplication/widgets/mytextformField.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:myapplication/widgets/notification_button.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -51,10 +50,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             duration: Duration(milliseconds: 800),
           )
       );
-    } else if (phoneNumber.text.length < 11 || phoneNumber.text.length > 11) {
+    } else if (phoneNumber.text.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Number"),
+            content: Text("Code postale contient min 4 caractères"),
             backgroundColor: Theme.of(context).primaryColor,
             duration: Duration(milliseconds: 800),
           )
@@ -79,21 +78,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userUid;
 
   Future<String> _uploadImage({File image}) async {
-    String imageUrl;
-    Reference storageReference = FirebaseStorage.instance.ref().child("UserImage/$userUid");
-    UploadTask uploadTask = storageReference.putFile(image);
-    uploadTask.then((res) {
-      imageUrl = res.ref.getDownloadURL() as String;
+    FirebaseStorage storage = FirebaseStorage.instance;
+    String url;
+    Reference ref = storage.ref().child("UserImage/$userUid");
+    UploadTask uploadTask = ref.putFile(image);
+    uploadTask.whenComplete(() {
+      url = ref.getDownloadURL() as String;
+    }).catchError((onError) {
+      print(onError);
     });
-    return imageUrl;
-    /*
-    StorageReference storageReference =
-        FirebaseStorage.instance.ref().child("UserImage/$userUid");
-    StorageUploadTask uploadTask = storageReference.putFile(image);
-    StorageTaskSnapshot snapshot = await uploadTask.onComplete;
-    String imageUrl = await snapshot.ref.getDownloadURL();
-    return imageUrl;
-     */
+    return url;
   }
 
   void getUserUid() {
@@ -112,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Container();
     FirebaseFirestore.instance.collection("User").doc(userUid).update({
       "UserName": userName.text,
-      "UserGender": isMale == true ? "Male" : "Female",
+      "UserGender": isMale == true ? "Homme" : "Femme",
       "UserNumber": phoneNumber.text,
       "UserImage": imageMap,
       "UserAddress": address.text
@@ -165,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     address = TextEditingController(text: userModel.userAddress);
     userName = TextEditingController(text: userModel.userName);
     phoneNumber = TextEditingController(text: userModel.userPhoneNumber);
-    if (userModel.userGender == "Male") {
+    if (userModel.userGender == "Homme") {
       isMale = true;
     } else {
       isMale = false;
@@ -178,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _buildSingleContainer(
             endText: userModel.userName,
-            startText: "Name",
+            startText: "Nom",
           ),
           _buildSingleContainer(
             endText: userModel.userEmail,
@@ -186,11 +180,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           _buildSingleContainer(
             endText: userModel.userGender,
-            startText: "Gender",
+            startText: "Genre",
           ),
           _buildSingleContainer(
             endText: userModel.userPhoneNumber,
-            startText: "Phone Number",
+            startText: "Code postale",
           ),
           _buildSingleContainer(
             endText: userModel.userAddress,
@@ -212,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   ListTile(
                     leading: Icon(Icons.camera_alt),
-                    title: Text("Pick Form Camera"),
+                    title: Text("Prendre une photo"),
                     onTap: () {
                       getImage(source: ImageSource.camera);
                       Navigator.of(context).pop();
@@ -220,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   ListTile(
                     leading: Icon(Icons.photo_library),
-                    title: Text("Pick Form Gallery"),
+                    title: Text("a partir de Gallery"),
                     onTap: () {
                       getImage(source: ImageSource.gallery);
                       Navigator.of(context).pop();
@@ -257,12 +251,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
             child: _buildSingleContainer(
               color: Colors.white,
-              endText: isMale == true ? "Male" : "Female",
+              endText: isMale == true ? "Homme" : "Femme",
               startText: "Gender",
             ),
           ),
           MyTextFormField(
-            name: "Phone Number",
+            name: "Code postale",
             controller: phoneNumber,
           ),
           MyTextFormField(
@@ -438,7 +432,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(20)),
                                 child: edit == false
                                     ? MyButton(
-                                        name: "Edit Profile",
+                                        name: "Modifier profile",
                                         onPressed: () {
                                           setState(() {
                                             edit = true;

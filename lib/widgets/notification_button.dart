@@ -16,10 +16,10 @@ class _NotificationButtonState extends State<NotificationButton> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Alert"),
+            title: Text("Alerte"),
             actions: [
               TextButton(
-                child: Text("Clear Notification"),
+                child: Text("Effacer la notification"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   setState(() {
@@ -28,7 +28,7 @@ class _NotificationButtonState extends State<NotificationButton> {
                 },
               ),
               TextButton(
-                child: Text("Okey"),
+                child: Text("Ok"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -38,8 +38,8 @@ class _NotificationButtonState extends State<NotificationButton> {
               child: ListBody(
                 children: [
                   Text(productProvider.notificationList.isNotEmpty
-                      ? "Your Product On Way"
-                      : "No Notification At Yet"),
+                      ? "Votre produit en route"
+                      : "Aucune notification pour le moment"),
                 ],
               ),
             ),

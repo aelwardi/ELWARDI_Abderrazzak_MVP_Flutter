@@ -125,10 +125,10 @@ class _SignUpState extends State<SignUp> {
             content: Text("Password  est trop court"),
           )
       );
-    } else if (phoneNumber.text.length < 11 || phoneNumber.text.length > 11) {
+    } else if ( phoneNumber.text.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Phone Number Must Be 11 "),
+            content: Text("Code postale contient min 4 caractères"),
           )
       );
     } else if (address.text.isEmpty) {
@@ -190,7 +190,7 @@ class _SignUpState extends State<SignUp> {
                 child: Row(
                   children: [
                     Text(
-                      isMale == true ? "Male" : "Female",
+                      isMale == true ? "Homme" : "Femme",
                       style: TextStyle(color: Colors.black87, fontSize: 18),
                     ),
                   ],
@@ -202,7 +202,7 @@ class _SignUpState extends State<SignUp> {
             height: 10,
           ),
           MyTextFormField(
-            name: "Phone Number",
+            name: "Code postale",
             controller: phoneNumber,
           ),
           SizedBox(
@@ -230,7 +230,7 @@ class _SignUpState extends State<SignUp> {
           ),
           isLoading == false
               ? MyButton(
-            name: "SignUp",
+            name: "S\'inscrire",
             onPressed: () {
               vaildation();
             },
